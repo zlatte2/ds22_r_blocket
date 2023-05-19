@@ -1,0 +1,124 @@
+---
+title: "Kunskapskontroll - R-programmering"
+author: "Tommy Nielsen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Del 1 – Datainsamling + POC
+
+## Datainsamling
+
+
+
+
+```{r}
+
+
+```
+
+## POC
+
+import
+```{r data_in}
+file.path <- "C:/Users/Niels/# EC utbildning/Kurser/07_R_prog_dataanalys/Kunskapskontroll/data_collection_POC_tommy_data_in.xlsx"
+
+library(readxl)
+
+data <- read_excel(file.path)
+class(data)
+
+head(data)
+
+summary(data)
+sum(is.na(data))
+
+```
+
+```{r}
+
+model1 <- lm(Pris ~ ., data = data)
+
+summary(model1)
+
+# med så många variabler för "Miltal" så blir r2 bättre bara utifrån det. Här ser vi detta då adjusted R2 
+# är betydligt lägre.
+
+# Alternativ är att ta ut ett värde / siffra. (mitte av intervallen, då vi kan anta att mitten ger medelvärdet)
+# Då får vi en variabel istället.
+# Då dessa är kontinuerliga.
+
+```
+
+
+```{r}
+# Transformerar Miltal till Medelvärde istället för intervall 
+
+library(tidyverse)
+
+data.2 <- data
+
+data.2 <- data.2 %>%
+  separate(Miltal, into = c("Lägsta_miltal", "Högsta_miltal"), sep = " - ") %>%
+  mutate(
+    Lägsta_miltal = str_replace_all(Lägsta_miltal, " ", ""),
+    Högsta_miltal = str_replace_all(Högsta_miltal, " ", ""),
+    Miltal_mitten = round((as.numeric(Lägsta_miltal) + as.numeric(Högsta_miltal)) / 2)
+    )%>%
+  select(-Lägsta_miltal, -Högsta_miltal)
+data.2
+
+```
+
+
+
+
+```{r}
+
+model2 <- lm(Pris ~ ., data = data.2)
+summary(model2)
+
+```
+
+
+
+```{r}
+BIC.model1 <- BIC(model1)
+BIC.model1
+
+
+BIC.model2 <- BIC(model2)
+BIC.model2
+
+```
+
+
+
+
+```{r}
+
+```
+
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
